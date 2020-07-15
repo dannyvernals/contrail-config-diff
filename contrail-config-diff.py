@@ -6,7 +6,6 @@ import difflib
 import argparse
 
 
-
 def get_juju_status():
     """get juju status from command line"""
     pipes = (subprocess.Popen(['juju', 'status'], stdout=subprocess.PIPE,  stderr=subprocess.PIPE))
@@ -38,13 +37,23 @@ def parse_juju_status(juju_status):
             unit_ips.setdefault('neutron', list()).append(str(line.split()[4]))
     return unit_ips
 
+def read_file_lines(file_path):
+    """get text from a file as list of lines"""
+    with open(file_path) as fh:
+        file_contents = fh.readlines()
+    return file_contents
+
+
+def read_file(file_path):
+    """get text from a file"""
+    with open(file_path) as fh:
+        file_contents = fh.read()
+    return file_contents
 
 def read_conf_files(unit_ip_file, remote_files):
     """load settings from the specified yaml files"""
-    with open (remote_files, 'r') as conf_fh:
-        conf_files = yaml.load(conf_fh.read())
-    with open (unit_ip_file, 'r') as units_fh:
-        unit_ips = yaml.load(units_fh.read())
+    conf_files = yaml.load(read_file(remote_files))
+    unit_ips = yaml.load(read_file(unit_ip_file))
     return unit_ips, conf_files
 
 
@@ -83,38 +92,33 @@ def write_config_files(unit_ips, files, dir):
                 write_file(str(conf_file), '{}/{}/{}/{}'.format(dir, component, server_ip, file_name))
 
 
-def read_file(file_path):
-    with open(file_path) as fh:
-        file_contents = fh.readlines()
-    return file_contents
-
-
 def diff_files(old_dir, new_dir):
-    """Instantiate a file compare object against the specified directories."""
+    """Instantiate a file compare object against the specified directories.
+    call 'recurse_diff_files()' to compare all files in those directories"""
     dcmp = filecmp.dircmp(old_dir, new_dir)
     recurse_diff_files(dcmp)
 
 
 def recurse_diff_files(dcmp):
-    """Recurse through all subdirs of 'dcmp' dircmp object
+    """Recurse through all subdirs of 'dcmp' filecmp.dircmp object
     Return all the files missing and print a diff of all files that are different"""
     if dcmp.diff_files:
         for file_name in dcmp.diff_files:
             left_file = dcmp.left + '/' + file_name
             right_file = dcmp.right + '/' + file_name
-            left_lines = read_file(left_file)
-            right_lines = read_file(right_file)
+            left_lines = read_file_lines(left_file)
+            right_lines = read_file_lines(right_file)
             print('=' * 100)
             for line in difflib.unified_diff(left_lines, right_lines, fromfile=left_file, tofile=right_file, lineterm=''):
                 print(line)
         #print((dcmp.left, dcmp.right, dcmp.diff_files))
     if dcmp.left_only:
         print('=' * 100)
-        print("Files missing in the '{}' directory: ".format(dcmp.left))
+        print("Files missing in the '{}' directory: ".format(dcmp.right))
         print('\n'.join(dcmp.left_only))
     if dcmp.right_only:
         print('=' * 100)
-        print("Files missing in the '{}' directory: ".format(dcmp.right))
+        print("Files missing in the '{}' directory: ".format(dcmp.left))
         print('\n'.join(dcmp.right_only))    
     for sub_dcmp in dcmp.subdirs.values():
         recurse_diff_files(sub_dcmp)
@@ -129,6 +133,8 @@ def cli_grab():
     parser.add_argument("output_dir", help="Location of where to store config files")
     parser.add_argument("compare_dir", help="Location of config files to compare against")
     parser.add_argument("-g", "--get-ips", action="store_true", help="Generate the ips_file from 'juju status'")
+    parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare files, "
+                                                                       "configs must exist from previous runs'")
     args = vars(parser.parse_args())
     return args
 
@@ -143,8 +149,10 @@ def main():
         unit_ips = parse_juju_status(status)
         write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])
     unit_ips, conf_files = read_conf_files(args['ips_file'], args['config_file'])
-    #write_config_files(unit_ips, conf_files, args['output_dir'])
+    if not args['diff_only']:
+        write_config_files(unit_ips, conf_files, args['output_dir'])
     diff_files(args['compare_dir'], args['output_dir'])
+
 
 if __name__ == '__main__':
     main()

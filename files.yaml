@@ -1,0 +1,50 @@
+heat:
+  - /etc/heat/heat.conf
+
+contrail-haproxy:
+  - /etc/haproxy/haproxy.cfg
+
+neutron:
+  - /etc/neutron/neutron.conf
+  - /etc/opencontrail/ContrailPlugin.ini
+
+contrail-agent:
+  - /etc/contrail/ssl/agent/private/server-privkey.pem
+  - /etc/contrail/ssl/agent/certs/ca-cert.pem
+  - /etc/contrail/ssl/agent/certs/server.pem
+  - /etc/contrail/common_vrouter.env
+  - /etc/contrail/vrouter/docker-compose.yaml
+  - /etc/contrail/contrail-vrouter-agent.conf
+  - /etc/nova/nova.conf
+
+contrail-controller:
+  - /etc/contrail/common_web.env
+  - /etc/contrail/webui/docker-compose.yaml
+  - /etc/contrail/redis/docker-compose.yaml
+  - /etc/contrail/config_database/docker-compose.yaml
+  - /etc/contrail/config_api/docker-compose.yaml
+  - /etc/contrail/control/docker-compose.yaml
+  - /etc/contrail/ssl/controller/private/server-privkey.pem
+  - /etc/contrail/ssl/controller/certs/server.pem
+  - /etc/contrail/ssl/controller/certs/ca-cert.pem
+  - /etc/contrail/common_config.env
+  - /etc/contrail/redis.env
+
+contrail-analyticsdb:
+  - /etc/contrail/common_analyticsdb.env
+  - /etc/contrail/analytics_database/docker-compose.yaml
+  - /etc/contrail/ssl/analyticsdb/private/server-privkey.pem
+  - /etc/contrail/ssl/analyticsdb/certs/ca-cert.pem
+  - /etc/contrail/ssl/analyticsdb/certs/server.pem
+
+contrail-analytics:
+  - /etc/contrail/analytics_snmp/docker-compose.yaml
+  - /etc/contrail/redis/docker-compose.yaml
+  - /etc/contrail/analytics/docker-compose.yaml
+  - /etc/contrail/analytics_alarm/docker-compose.yaml
+  - /etc/contrail/redis.env
+  - /etc/contrail/common_analytics.env
+  - /etc/contrail/ssl/analytics/private/server-privkey.pem
+  - /etc/contrail/ssl/analytics/certs/ca-cert.pem
+  - /etc/contrail/ssl/analytics/certs/server.pem
+

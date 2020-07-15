@@ -1,0 +1,14 @@
+contrail-agent:
+- 172.16.0.10
+contrail-analytics:
+- 172.16.0.18
+contrail-analyticsdb:
+- 172.16.0.23
+contrail-controller:
+- 172.16.0.22
+contrail-haproxy:
+- 172.16.0.24
+heat:
+- 172.16.0.19
+neutron:
+- 172.16.0.20

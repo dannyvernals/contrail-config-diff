@@ -6,7 +6,7 @@ contrail-haproxy:
 
 neutron:
   - /etc/neutron/neutron.conf
-  - /etc/opencontrail/ContrailPlugin.ini
+  - /etc/neutron/plugins/opencontrail/ContrailPlugin.ini
 
 contrail-agent:
   - /etc/contrail/ssl/agent/private/server-privkey.pem

@@ -1,4 +1,6 @@
 import subprocess
+import os
+import shutil
 import yaml
 import filecmp
 import pathlib
@@ -109,7 +111,9 @@ def recurse_diff_files(dcmp):
             left_lines = read_file_lines(left_file)
             right_lines = read_file_lines(right_file)
             print('=' * 100)
-            for line in difflib.unified_diff(left_lines, right_lines, fromfile=left_file, tofile=right_file, lineterm=''):
+            for line in difflib.unified_diff(left_lines, right_lines, 
+                                             fromfile=left_file, tofile=right_file, lineterm=''
+                                             ):
                 print(line)
         #print((dcmp.left, dcmp.right, dcmp.diff_files))
     if dcmp.left_only:
@@ -126,18 +130,36 @@ def recurse_diff_files(dcmp):
 
 def cli_grab():
     """take stuff from cli, output it in a dict"""
-    parser = argparse.ArgumentParser(description="Grab contrail configs and compare against others. "
+    parser = argparse.ArgumentParser(description="Grab contrail configs and compare with others. "
                                                  "Use for planned work verification.")
     parser.add_argument("ips_file", help="Location of YAML file containing Contrail component IPs")
     parser.add_argument("config_file", help="Location of YAML file containing config file paths")
     parser.add_argument("output_dir", help="Location of where to store config files")
     parser.add_argument("compare_dir", help="Location of config files to compare against")
-    parser.add_argument("-g", "--get-ips", action="store_true", help="Generate the ips_file from 'juju status'")
+    parser.add_argument("-g", "--get-ips", action="store_true", help="Generate ips_file from 'juju status'")
     parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare files, "
-                                                                       "configs must exist from previous runs'")
+                                                                    "configs must exist from previous runs'")
     args = vars(parser.parse_args())
     return args
 
+
+def check_dir(output_dir):
+    if os.path.dirname(os.path.realpath(__file__)) == os.path.realpath(output_dir):
+        print("you have specified an output dir that is where the script runs, please use a sub directory")
+        exit()
+    if os.path.exists(output_dir):
+        while True:
+            answer = input("output directory already exists, old files will be deleted, proceed?, y/n:")
+            if answer.lower() not in ('y', 'n'):
+                print("'y' or 'n' only please")
+            else:
+                break
+            if answer.lower() == 'n':
+                exit()
+            elif answer.lower() == 'y':
+                continue
+        shutil.rmtree(output_dir)
+    os.mkdir(output_dir)
 
 
 def main():
@@ -150,6 +172,7 @@ def main():
         write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])
     unit_ips, conf_files = read_conf_files(args['ips_file'], args['config_file'])
     if not args['diff_only']:
+        check_dir(args['output_dir'])
         write_config_files(unit_ips, conf_files, args['output_dir'])
     diff_files(args['compare_dir'], args['output_dir'])
 

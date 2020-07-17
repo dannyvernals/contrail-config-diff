@@ -162,8 +162,9 @@ def cli_grab():
                                                                     "configs must exist from previous runs'")
     parser.add_argument("-m", "--diff-mode", default="normal", help="Style of diff. "
                                                                     "'normal', 'context' or 'unified'")
-    parser.add_argument("-u", "--username", default="ubuntu", help="username to SSH to contrail components")
-    parser.add_argument("-p", "--inc-passwords", action="store_true", help="include passwords in the files grabbed")
+    parser.add_argument("-u", "--username", default="ubuntu", help="Username to SSH to contrail components. "
+                                                                    "Default is 'ubuntu'")
+    parser.add_argument("-p", "--inc-passwords", action="store_true", help="Include passwords in the files grabbed")
     args = vars(parser.parse_args())
     return args
 

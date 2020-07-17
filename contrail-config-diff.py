@@ -4,7 +4,6 @@ import shutil
 import yaml
 import filecmp
 import pathlib
-import difflib
 import argparse
 
 
@@ -94,27 +93,30 @@ def write_config_files(unit_ips, files, dir):
                 write_file(str(conf_file), '{}/{}/{}/{}'.format(dir, component, server_ip, file_name))
 
 
-def diff_files(old_dir, new_dir):
+def diff_files(old_dir, new_dir, diff_mode):
     """Instantiate a file compare object against the specified directories.
     call 'recurse_diff_files()' to compare all files in those directories"""
     dcmp = filecmp.dircmp(old_dir, new_dir)
-    recurse_diff_files(dcmp)
+    recurse_diff_files(dcmp, diff_mode)
 
 
-def recurse_diff_files(dcmp):
+def recurse_diff_files(dcmp, diff_mode):
     """Recurse through all subdirs of 'dcmp' filecmp.dircmp object
     Return all the files missing and print a diff of all files that are different"""
     if dcmp.diff_files:
         for file_name in dcmp.diff_files:
             left_file = dcmp.left + '/' + file_name
             right_file = dcmp.right + '/' + file_name
-            left_lines = read_file_lines(left_file)
-            right_lines = read_file_lines(right_file)
+            if diff_mode == 'context':
+                diff_flag = '-c'
+            elif diff_mode == 'unified':
+                diff_flag = '-u'
+            else:
+                diff_flag = '--normal'
+            diff = (subprocess.Popen(
+                    ['diff', diff_flag, left_file,right_file], stdout=subprocess.PIPE).communicate()[0])
             print('=' * 100)
-            for line in difflib.unified_diff(left_lines, right_lines, 
-                                             fromfile=left_file, tofile=right_file, lineterm=''
-                                             ):
-                print(line)
+            print(diff.decode('utf-8'))
         #print((dcmp.left, dcmp.right, dcmp.diff_files))
     if dcmp.left_only:
         print('=' * 100)
@@ -125,7 +127,7 @@ def recurse_diff_files(dcmp):
         print("Files missing in the '{}' directory: ".format(dcmp.left))
         print('\n'.join(dcmp.right_only))    
     for sub_dcmp in dcmp.subdirs.values():
-        recurse_diff_files(sub_dcmp)
+        recurse_diff_files(sub_dcmp, diff_mode)
 
 
 def cli_grab():
@@ -141,11 +143,14 @@ def cli_grab():
                                                      "output previously saved to a file")
     parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare files, "
                                                                     "configs must exist from previous runs'")
+    parser.add_argument("-m", "--diff-mode", default="normal", help="Style of diff. "
+                                                                    "'normal', 'context' or 'unified'")
     args = vars(parser.parse_args())
     return args
 
 
 def check_dir(output_dir):
+    """warn if output dir already exists, delete it if user accepts this"""
     if os.path.dirname(os.path.realpath(__file__)) == os.path.realpath(output_dir):
         print("you have specified an output dir that is where the script runs, please use a sub directory")
         exit()
@@ -180,7 +185,7 @@ def main():
     if not args['diff_only']:
         check_dir(args['output_dir'])
         write_config_files(unit_ips, conf_files, args['output_dir'])
-    diff_files(args['compare_dir'], args['output_dir'])
+    diff_files(args['compare_dir'], args['output_dir'], args['diff_mode'])
 
 
 if __name__ == '__main__':

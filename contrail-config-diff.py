@@ -11,7 +11,7 @@ import argparse
 def get_juju_status():
     """get juju status from command line"""
     pipes = (subprocess.Popen(['juju', 'status'], stdout=subprocess.PIPE,  stderr=subprocess.PIPE))
-    std_out, std_err = pipes.communicate()
+    std_out, std_err = pipes.communicate(timeout=20)
     if pipes.returncode != 0:
         raise Exception(std_err.strip())
     else:
@@ -71,7 +71,7 @@ def get_remote_file(remote_ip, file_location):
     do this via a sudo cat"""
     pipes = (subprocess.Popen(['ssh', 'ubuntu@{}'.format(remote_ip), 'sudo', 'cat', file_location],
                  stdout=subprocess.PIPE,  stderr=subprocess.PIPE))
-    std_out, std_err = pipes.communicate()
+    std_out, std_err = pipes.communicate(timeout=20)
     if pipes.returncode != 0:
         if b'No such file or directory' in std_err:
             return ''

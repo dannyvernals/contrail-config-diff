@@ -5,6 +5,7 @@ import yaml
 import filecmp
 import pathlib
 import argparse
+import re
 
 
 def get_juju_status():
@@ -60,15 +61,16 @@ def read_conf_files(unit_ip_file, remote_files):
 
 def write_file(contents, file_location):
     """write arbitrary strings to a file"""
-    with open(file_location, 'w') as write_fh:
+    with open(file_location, 'w+') as write_fh:
         write_fh.write(contents)
+    os.chmod(file_location, 0o600)
 
 
-def get_remote_file(remote_ip, file_location):
+def get_remote_file(remote_ip, file_location, username):
     """grab the text contents of a file on a remote system via SSH.
     as most contrail / openstack config files are only root readable
     do this via a sudo cat"""
-    pipes = (subprocess.Popen(['ssh', 'ubuntu@{}'.format(remote_ip), 'sudo', 'cat', file_location],
+    pipes = (subprocess.Popen(['ssh', username + '@{}'.format(remote_ip), 'sudo', 'cat', file_location],
                  stdout=subprocess.PIPE,  stderr=subprocess.PIPE))
     std_out, std_err = pipes.communicate(timeout=20)
     if pipes.returncode != 0:
@@ -79,7 +81,19 @@ def get_remote_file(remote_ip, file_location):
     return std_out.decode('utf-8')
 
 
-def write_config_files(unit_ips, files, dir):
+def password_obfuscate(text_blob):
+    new_blob = []
+    for line in text_blob.splitlines():
+        if 'password' in line.lower() and 'auth_type' not in line.lower():
+            line = re.split('=| ', line)
+            new_blob.append(line[0] + ' #PASSWORD REMOVED#')
+        else:
+            new_blob.append(line)
+    return '\n'.join(new_blob)
+    
+
+
+def write_config_files(unit_ips, files, dir, username, inc_passwords):
     """for components endpoints in 'unit_ips' grab config in 'files'
     and dump the file to 'dir'"""
     for component, server_ips in unit_ips.items():
@@ -87,9 +101,12 @@ def write_config_files(unit_ips, files, dir):
         for server_ip in server_ips:
             print("from '{}'".format(server_ip))
             for conf_loc in files[component]:
-                conf_file = get_remote_file(server_ip, conf_loc)
+                conf_file = get_remote_file(server_ip, conf_loc, username)
+                if not inc_passwords:
+                    conf_file = password_obfuscate(conf_file)
                 file_name = conf_loc.replace('/', '_')
                 pathlib.Path('{}/{}/{}'.format(dir, component, server_ip)).mkdir(parents=True, exist_ok=True)
+                pathlib.Path('{}/{}/{}'.format(dir, component, server_ip)).chmod(0o700)
                 write_file(str(conf_file), '{}/{}/{}/{}'.format(dir, component, server_ip, file_name))
 
 
@@ -145,6 +162,8 @@ def cli_grab():
                                                                     "configs must exist from previous runs'")
     parser.add_argument("-m", "--diff-mode", default="normal", help="Style of diff. "
                                                                     "'normal', 'context' or 'unified'")
+    parser.add_argument("-u", "--username", default="ubuntu", help="username to SSH to contrail components")
+    parser.add_argument("-p", "--inc-passwords", action="store_true", help="include passwords in the files grabbed")
     args = vars(parser.parse_args())
     return args
 
@@ -184,7 +203,7 @@ def main():
     unit_ips, conf_files = read_conf_files(args['ips_file'], args['config_file'])
     if not args['diff_only']:
         check_dir(args['output_dir'])
-        write_config_files(unit_ips, conf_files, args['output_dir'])
+        write_config_files(unit_ips, conf_files, args['output_dir'], args['username'], args['inc_passwords'])
     diff_files(args['compare_dir'], args['output_dir'], args['diff_mode'])
 
 

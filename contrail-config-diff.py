@@ -84,9 +84,9 @@ def write_config_files(unit_ips, files, dir):
     """for components endpoints in 'unit_ips' grab config in 'files'
     and dump the file to 'dir'"""
     for component, server_ips in unit_ips.items():
-        print("getting *{}* data".format(component))
+        print("getting '{}' data".format(component))
         for server_ip in server_ips:
-            print("from *{}*".format(server_ip))
+            print("from '{}'".format(server_ip))
             for conf_loc in files[component]:
                 conf_file = get_remote_file(server_ip, conf_loc)
                 file_name = conf_loc.replace('/', '_')
@@ -172,7 +172,7 @@ def main():
         print("generating and writing component IPs file from 'juju status' output")
         unit_ips = parse_juju_status(status)
         write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])
-    elif 'get_ips_file' in args:
+    elif args['get_ips_file']:
         status = read_file(args['get_ips_file'])
         unit_ips = parse_juju_status(status)
         write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])

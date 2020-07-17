@@ -23,19 +23,19 @@ def parse_juju_status(juju_status):
     unit_ips = {}
     juju_status = juju_status.split("\n")
     for line in juju_status:
-        if 'contrail-agent/' in line:
+        if line.startswith('  contrail-agent') and '/' in line:
             unit_ips.setdefault('contrail-agent', list()).append(str(line.split()[3]))
-        elif "contrail-controller/" in line:
+        elif line.startswith('contrail-controller/'):
             unit_ips.setdefault('contrail-controller', list()).append(str(line.split()[4]))
-        elif "contrail-analytics/" in line:
+        elif line.startswith('contrail-analytics/'):
             unit_ips.setdefault('contrail-analytics', list()).append(str(line.split()[4]))
-        elif "contrail-analyticsdb/" in line:
+        elif line.startswith('contrail-analyticsdb/'):
             unit_ips.setdefault('contrail-analyticsdb', list()).append(str(line.split()[4]))
-        elif "contrail-haproxy/" in line:
+        elif line.startswith('contrail-haproxy/'):
             unit_ips.setdefault('contrail-haproxy', list()).append(str(line.split()[4]))
-        elif "heat/" in line:
+        elif line.startswith('heat/'):
             unit_ips.setdefault('heat', list()).append(str(line.split()[4]))
-        elif "neutron-api/" in line:
+        elif line.startswith('neutron-api/'):
             unit_ips.setdefault('neutron', list()).append(str(line.split()[4]))
     return unit_ips
 

@@ -137,6 +137,8 @@ def cli_grab():
     parser.add_argument("output_dir", help="Location of where to store config files")
     parser.add_argument("compare_dir", help="Location of config files to compare against")
     parser.add_argument("-g", "--get-ips", action="store_true", help="Generate ips_file from 'juju status'")
+    parser.add_argument("-f", "--get-ips-file", help="Generate ips_file from 'juju status' "
+                                                     "output previously saved to a file")
     parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare files, "
                                                                     "configs must exist from previous runs'")
     args = vars(parser.parse_args())
@@ -168,6 +170,10 @@ def main():
         print("getting juju status")
         status = get_juju_status()
         print("generating and writing component IPs file from 'juju status' output")
+        unit_ips = parse_juju_status(status)
+        write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])
+    elif 'get_ips_file' in args:
+        status = read_file(args['get_ips_file'])
         unit_ips = parse_juju_status(status)
         write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])
     unit_ips, conf_files = read_conf_files(args['ips_file'], args['config_file'])

@@ -142,7 +142,6 @@ def recurse_diff_files(dcmp, diff_mode):
     if dcmp.diff_files:
         for file_name in dcmp.diff_files:
             get_file_diffs(dcmp, file_name, diff_mode)
-        #print((dcmp.left, dcmp.right, dcmp.diff_files))
     if dcmp.left_only:
         print('=' * 100)
         print("Files missing in the '{}' directory: ".format(dcmp.right))
@@ -173,7 +172,7 @@ def cli_grab():
                                                                     "'normal', 'context' or 'unified'")
     parser.add_argument("-u", "--username", default="ubuntu", help="Username to SSH to contrail "
                                                                    "components. Default is 'ubuntu'")
-    parser.add_argument("-p", "--inc-passwords", action="store_true", help="Include passwords" 
+    parser.add_argument("-p", "--inc-passwords", action="store_true", help="Include passwords"
                                                                            "in the files grabbed")
     args = vars(parser.parse_args())
     return args

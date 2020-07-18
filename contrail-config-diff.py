@@ -129,6 +129,7 @@ def get_file_diffs(dcmp, file_name, diff_mode):
     diff = (subprocess.Popen(
             ['diff', diff_flag, left_file,right_file], stdout=subprocess.PIPE).communicate()[0])
     print('=' * 100)
+    print("{}\n{}".format(left_file, right_file))
     print(diff.decode('utf-8'))
 
 def recurse_diff_files(dcmp, diff_mode):

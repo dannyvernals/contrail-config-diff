@@ -1,6 +1,5 @@
 """ Grab contrail config files and compare them against previous versions"""
 
-import sys
 import subprocess
 import os
 import shutil
@@ -182,13 +181,15 @@ def cli_grab():
 def check_dir(output_dir):
     """warn if output dir already exists, delete it if user accepts this"""
     if os.path.dirname(os.path.realpath(__file__)) == os.path.realpath(output_dir):
-        print("You have specified an output dir that is where the script runs.\n"
-              "Please use a sub directory"
+        print("\nYou have specified an output dir that is where the script runs.\n"
+              "Please use a sub directory."
               )
         exit()
     if os.path.exists(output_dir):
         while True:
-            answer = input("output directory already exists, old files will be deleted, proceed?, y/n:")
+            answer = input("output directory already exists, "
+                           "old files will be deleted, proceed?, y/n:"
+                           )
             if answer.lower() not in ('y', 'n'):
                 print("'y' or 'n' only please")
             else:

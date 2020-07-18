@@ -1,11 +1,11 @@
 import subprocess
 import os
 import shutil
-import yaml
 import filecmp
 import pathlib
 import argparse
 import re
+import yaml
 
 
 def get_juju_status():
@@ -71,7 +71,7 @@ def get_remote_file(remote_ip, file_location, username):
     as most contrail / openstack config files are only root readable
     do this via a sudo cat"""
     pipes = (subprocess.Popen(['ssh', username + '@{}'.format(remote_ip), 'sudo', 'cat', file_location],
-                 stdout=subprocess.PIPE,  stderr=subprocess.PIPE))
+                 stdout=subprocess.PIPE, stderr=subprocess.PIPE))
     std_out, std_err = pipes.communicate(timeout=20)
     if pipes.returncode != 0:
         if b'No such file or directory' in std_err:
@@ -90,7 +90,6 @@ def password_obfuscate(text_blob):
         else:
             new_blob.append(line)
     return '\n'.join(new_blob)
-    
 
 
 def write_config_files(unit_ips, files, dir, username, inc_passwords):
@@ -118,6 +117,7 @@ def diff_files(old_dir, new_dir, diff_mode):
 
 
 def get_file_diffs(dcmp, file_name, diff_mode):
+    """Echo file diffs to stdout"""
     left_file = dcmp.left + '/' + file_name
     right_file = dcmp.right + '/' + file_name
     if diff_mode == 'context':
@@ -127,13 +127,13 @@ def get_file_diffs(dcmp, file_name, diff_mode):
     else:
         diff_flag = '--normal'
     diff = (subprocess.Popen(
-            ['diff', diff_flag, left_file,right_file], stdout=subprocess.PIPE).communicate()[0])
+            ['diff', diff_flag, left_file, right_file], stdout=subprocess.PIPE).communicate()[0])
     print('=' * 100)
     print("{}\n{}".format(left_file, right_file))
     print(diff.decode('utf-8'))
 
 def recurse_diff_files(dcmp, diff_mode):
-    """Recurse through all subdirs of 'dcmp' filecmp.dircmp object
+    """Recurse through all subdirs of 'dcmp' filecmp.dircmp object.
     Return all the files missing and print a diff of all files that are different"""
     if dcmp.diff_files:
         for file_name in dcmp.diff_files:
@@ -162,12 +162,12 @@ def cli_grab():
     parser.add_argument("-g", "--get-ips", action="store_true", help="Generate ips_file from 'juju status'")
     parser.add_argument("-f", "--get-ips-file", help="Generate ips_file from 'juju status' "
                                                      "output previously saved to a file")
-    parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare files, "
-                                                                    "configs must exist from previous runs'")
+    parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare files. They must "
+                                                                       "exist from previous runs'")
     parser.add_argument("-m", "--diff-mode", default="normal", help="Style of diff. "
                                                                     "'normal', 'context' or 'unified'")
     parser.add_argument("-u", "--username", default="ubuntu", help="Username to SSH to contrail components. "
-                                                                    "Default is 'ubuntu'")
+                                                                   "Default is 'ubuntu'")
     parser.add_argument("-p", "--inc-passwords", action="store_true", help="Include passwords in the files grabbed")
     args = vars(parser.parse_args())
     return args

@@ -1,5 +1,6 @@
 """ Grab contrail config files and compare them against previous versions"""
 
+import sys
 import subprocess
 import os
 import shutil
@@ -191,7 +192,7 @@ def check_dir(output_dir):
             else:
                 break
             if answer.lower() == 'n':
-                exit()
+                sys.exit()
             elif answer.lower() == 'y':
                 continue
         shutil.rmtree(output_dir)

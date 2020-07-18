@@ -49,8 +49,8 @@ def read_file_lines(file_path):
 
 def read_file(file_path):
     """get text from a file"""
-    with open(file_path) as fh:
-        file_contents = fh.read()
+    with open(file_path) as file_handle:
+        file_contents = file_handle.read()
     return file_contents
 
 def read_conf_files(unit_ip_file, remote_files):
@@ -129,7 +129,7 @@ def get_file_diffs(dcmp, file_name, diff_mode):
         diff_flag = '-u'
     else:
         diff_flag = '--normal'
-    diff = (subprocess.Popen(['diff', diff_flag, left_file, right_file], 
+    diff = (subprocess.Popen(['diff', diff_flag, left_file, right_file],
                              stdout=subprocess.PIPE).communicate()[0]
             )
     print('=' * 100)
@@ -150,7 +150,7 @@ def recurse_diff_files(dcmp, diff_mode):
     if dcmp.right_only:
         print('=' * 100)
         print("Files missing in the '{}' directory: ".format(dcmp.left))
-        print('\n'.join(dcmp.right_only))    
+        print('\n'.join(dcmp.right_only))
     for sub_dcmp in dcmp.subdirs.values():
         recurse_diff_files(sub_dcmp, diff_mode)
 
@@ -213,7 +213,9 @@ def main():
     unit_ips, conf_files = read_conf_files(args['ips_file'], args['config_file'])
     if not args['diff_only']:
         check_dir(args['output_dir'])
-        write_config_files(unit_ips, conf_files, args['output_dir'], args['username'], args['inc_passwords'])
+        write_config_files(unit_ips, conf_files, 
+                           args['output_dir'], args['username'], args['inc_passwords']
+                           )
     diff_files(args['compare_dir'], args['output_dir'], args['diff_mode'])
 
 

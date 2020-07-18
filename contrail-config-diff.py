@@ -14,8 +14,7 @@ def get_juju_status():
     std_out, std_err = pipes.communicate(timeout=20)
     if pipes.returncode != 0:
         raise Exception(std_err.strip())
-    else:
-        return std_out.decode('utf-8')
+    return std_out.decode('utf-8')
 
 
 def parse_juju_status(juju_status):
@@ -41,8 +40,8 @@ def parse_juju_status(juju_status):
 
 def read_file_lines(file_path):
     """get text from a file as list of lines"""
-    with open(file_path) as fh:
-        file_contents = fh.readlines()
+    with open(file_path) as file_handle:
+        file_contents = file_handle.readlines()
     return file_contents
 
 
@@ -71,13 +70,14 @@ def get_remote_file(remote_ip, file_location, username):
     as most contrail / openstack config files are only root readable
     do this via a sudo cat"""
     pipes = (subprocess.Popen(['ssh', username + '@{}'.format(remote_ip), 'sudo', 'cat', file_location],
-                 stdout=subprocess.PIPE, stderr=subprocess.PIPE))
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                              )
+            )
     std_out, std_err = pipes.communicate(timeout=20)
     if pipes.returncode != 0:
         if b'No such file or directory' in std_err:
             return ''
-        else:
-            raise Exception(std_err.strip())
+        raise Exception(std_err.strip())
     return std_out.decode('utf-8')
 
 
@@ -92,7 +92,7 @@ def password_obfuscate(text_blob):
     return '\n'.join(new_blob)
 
 
-def write_config_files(unit_ips, files, dir, username, inc_passwords):
+def write_config_files(unit_ips, files, dir_path, username, inc_passwords):
     """for components endpoints in 'unit_ips' grab config in 'files'
     and dump the file to 'dir'"""
     for component, server_ips in unit_ips.items():
@@ -104,9 +104,9 @@ def write_config_files(unit_ips, files, dir, username, inc_passwords):
                 if not inc_passwords:
                     conf_file = password_obfuscate(conf_file)
                 file_name = conf_loc.replace('/', '_')
-                pathlib.Path('{}/{}/{}'.format(dir, component, server_ip)).mkdir(parents=True, exist_ok=True)
-                pathlib.Path('{}/{}/{}'.format(dir, component, server_ip)).chmod(0o700)
-                write_file(str(conf_file), '{}/{}/{}/{}'.format(dir, component, server_ip, file_name))
+                pathlib.Path('{}/{}/{}'.format(dir_path, component, server_ip)).mkdir(parents=True, exist_ok=True)
+                pathlib.Path('{}/{}/{}'.format(dir_path, component, server_ip)).chmod(0o700)
+                write_file(str(conf_file), '{}/{}/{}/{}'.format(dir_path, component, server_ip, file_name))
 
 
 def diff_files(old_dir, new_dir, diff_mode):
@@ -194,6 +194,7 @@ def check_dir(output_dir):
 
 
 def main():
+    """main script body"""
     args = cli_grab()
     if args['get_ips']:
         print("getting juju status")

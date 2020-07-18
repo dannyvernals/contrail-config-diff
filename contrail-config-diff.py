@@ -117,23 +117,26 @@ def diff_files(old_dir, new_dir, diff_mode):
     recurse_diff_files(dcmp, diff_mode)
 
 
+def get_file_diffs(dcmp, diff_mode):
+    left_file = dcmp.left + '/' + file_name
+    right_file = dcmp.right + '/' + file_name
+    if diff_mode == 'context':
+        diff_flag = '-c'
+    elif diff_mode == 'unified':
+        diff_flag = '-u'
+    else:
+        diff_flag = '--normal'
+    diff = (subprocess.Popen(
+            ['diff', diff_flag, left_file,right_file], stdout=subprocess.PIPE).communicate()[0])
+    print('=' * 100)
+    print(diff.decode('utf-8'))
+
 def recurse_diff_files(dcmp, diff_mode):
     """Recurse through all subdirs of 'dcmp' filecmp.dircmp object
     Return all the files missing and print a diff of all files that are different"""
     if dcmp.diff_files:
         for file_name in dcmp.diff_files:
-            left_file = dcmp.left + '/' + file_name
-            right_file = dcmp.right + '/' + file_name
-            if diff_mode == 'context':
-                diff_flag = '-c'
-            elif diff_mode == 'unified':
-                diff_flag = '-u'
-            else:
-                diff_flag = '--normal'
-            diff = (subprocess.Popen(
-                    ['diff', diff_flag, left_file,right_file], stdout=subprocess.PIPE).communicate()[0])
-            print('=' * 100)
-            print(diff.decode('utf-8'))
+            get_file_diffs(dcmp, diff_mode)
         #print((dcmp.left, dcmp.right, dcmp.diff_files))
     if dcmp.left_only:
         print('=' * 100)

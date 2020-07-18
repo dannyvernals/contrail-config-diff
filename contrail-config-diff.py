@@ -173,7 +173,7 @@ def cli_grab():
                                                                     "'normal', 'context' or 'unified'")
     parser.add_argument("-u", "--username", default="ubuntu", help="Username to SSH to contrail "
                                                                    "components. Default is 'ubuntu'")
-    parser.add_argument("-p", "--inc-passwords", action="store_true", help="Include passwords 
+    parser.add_argument("-p", "--inc-passwords", action="store_true", help="Include passwords" 
                                                                            "in the files grabbed")
     args = vars(parser.parse_args())
     return args

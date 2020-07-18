@@ -1,3 +1,5 @@
+""" Grab contrail config files and compare them against previous versions"""
+
 import subprocess
 import os
 import shutil
@@ -81,7 +83,8 @@ def get_remote_file(remote_ip, file_location, username):
     return std_out.decode('utf-8')
 
 
-def password_obfuscate(text_blob):
+def password_wipe(text_blob):
+    """remove passwords from text"""
     new_blob = []
     for line in text_blob.splitlines():
         if 'password' in line.lower() and 'auth_type' not in line.lower():
@@ -102,7 +105,7 @@ def write_config_files(unit_ips, files, dir_path, username, inc_passwords):
             for conf_loc in files[component]:
                 conf_file = get_remote_file(server_ip, conf_loc, username)
                 if not inc_passwords:
-                    conf_file = password_obfuscate(conf_file)
+                    conf_file = password_wipe(conf_file)
                 file_name = conf_loc.replace('/', '_')
                 pathlib.Path('{}/{}/{}'.format(dir_path, component, server_ip)).mkdir(parents=True, exist_ok=True)
                 pathlib.Path('{}/{}/{}'.format(dir_path, component, server_ip)).chmod(0o700)
@@ -126,8 +129,9 @@ def get_file_diffs(dcmp, file_name, diff_mode):
         diff_flag = '-u'
     else:
         diff_flag = '--normal'
-    diff = (subprocess.Popen(
-            ['diff', diff_flag, left_file, right_file], stdout=subprocess.PIPE).communicate()[0])
+    diff = (subprocess.Popen(['diff', diff_flag, left_file, right_file], 
+                             stdout=subprocess.PIPE).communicate()[0]
+            )
     print('=' * 100)
     print("{}\n{}".format(left_file, right_file))
     print(diff.decode('utf-8'))

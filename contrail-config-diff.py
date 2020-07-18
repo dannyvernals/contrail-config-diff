@@ -182,7 +182,9 @@ def cli_grab():
 def check_dir(output_dir):
     """warn if output dir already exists, delete it if user accepts this"""
     if os.path.dirname(os.path.realpath(__file__)) == os.path.realpath(output_dir):
-        print("you have specified an output dir that is where the script runs, please use a sub directory")
+        print("You have specified an output dir that is where the script runs.\n"
+              "Please use a sub directory"
+              )
         exit()
     if os.path.exists(output_dir):
         while True:
@@ -192,7 +194,7 @@ def check_dir(output_dir):
             else:
                 break
         if answer.lower() == 'n':
-            sys.exit()
+            exit()
         shutil.rmtree(output_dir)
     os.mkdir(output_dir)
 

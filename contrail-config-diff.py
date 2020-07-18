@@ -191,10 +191,8 @@ def check_dir(output_dir):
                 print("'y' or 'n' only please")
             else:
                 break
-            if answer.lower() == 'n':
-                sys.exit()
-            elif answer.lower() == 'y':
-                continue
+        if answer.lower() == 'n':
+            sys.exit()
         shutil.rmtree(output_dir)
     os.mkdir(output_dir)
 

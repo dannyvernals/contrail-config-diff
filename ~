@@ -73,7 +73,7 @@ def get_remote_file(remote_ip, file_location, username):
     do this via a sudo cat"""
     pipes = (subprocess.Popen(['ssh', username + '@{}'.format(remote_ip), 'sudo', 'cat', file_location],
                               stdout=subprocess.PIPE, stderr=subprocess.PIPE
-                             )
+                              )
             )
     std_out, std_err = pipes.communicate(timeout=20)
     if pipes.returncode != 0:
@@ -107,10 +107,9 @@ def write_config_files(unit_ips, files, dir_path, username, inc_passwords):
                 if not inc_passwords:
                     conf_file = password_wipe(conf_file)
                 file_name = conf_loc.replace('/', '_')
-                local_path = '{}/{}/{}'.format(dir_path, component, server_ip)
-                pathlib.Path(local_path).mkdir(parents=True, exist_ok=True)
-                pathlib.Path(local_path).chmod(0o700)
-                write_file(str(conf_file), local_path + '/' + file_name)
+                pathlib.Path('{}/{}/{}'.format(dir_path, component, server_ip)).mkdir(parents=True, exist_ok=True)
+                pathlib.Path('{}/{}/{}'.format(dir_path, component, server_ip)).chmod(0o700)
+                write_file(str(conf_file), '{}/{}/{}/{}'.format(dir_path, component, server_ip, file_name))
 
 
 def diff_files(old_dir, new_dir, diff_mode):
@@ -132,7 +131,7 @@ def get_file_diffs(dcmp, file_name, diff_mode):
         diff_flag = '--normal'
     diff = (subprocess.Popen(['diff', diff_flag, left_file, right_file],
                              stdout=subprocess.PIPE).communicate()[0]
-           )
+            )
     print('=' * 100)
     print("{}\n{}".format(left_file, right_file))
     print(diff.decode('utf-8'))
@@ -169,10 +168,10 @@ def cli_grab():
                                                      "output previously saved to a file")
     parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare files. They must "
                                                                        "exist from previous runs'")
-    parser.add_argument("-m", "--diff-mode", default="normal", help="Style of diff. 'normal', "
-                                                                    "'context' or 'unified'")
+    parser.add_argument("-m", "--diff-mode", default="normal", help="Style of diff. "
+                                                                    "'normal', 'context' or 'unified'")
     parser.add_argument("-u", "--username", default="ubuntu", help="Username to SSH to contrail "
-                                                                   "components. Default: 'ubuntu'")
+                                                                   "components. Default is 'ubuntu'")
     parser.add_argument("-p", "--inc-passwords", action="store_true", help="Include passwords"
                                                                            "in the files grabbed")
     args = vars(parser.parse_args())
@@ -184,13 +183,13 @@ def check_dir(output_dir):
     if os.path.dirname(os.path.realpath(__file__)) == os.path.realpath(output_dir):
         print("\nYou have specified an output dir that is where the script runs.\n"
               "Please use a sub directory."
-             )
+              )
         exit()
     if os.path.exists(output_dir):
         while True:
             answer = input("output directory already exists, "
                            "old files will be deleted, proceed?, y/n:"
-                          )
+                           )
             if answer.lower() not in ('y', 'n'):
                 print("'y' or 'n' only please")
             else:
@@ -217,9 +216,9 @@ def main():
     unit_ips, conf_files = read_conf_files(args['ips_file'], args['config_file'])
     if not args['diff_only']:
         check_dir(args['output_dir'])
-        write_config_files(unit_ips, conf_files,
+        write_config_files(unit_ips, conf_files, 
                            args['output_dir'], args['username'], args['inc_passwords']
-                          )
+                           )
     diff_files(args['compare_dir'], args['output_dir'], args['diff_mode'])
 
 

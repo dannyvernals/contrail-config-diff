@@ -71,11 +71,16 @@ def get_remote_file(remote_ip, file_location, username):
     """grab the text contents of a file on a remote system via SSH.
     as most contrail / openstack config files are only root readable
     do this via a sudo cat"""
-    pipes = (subprocess.Popen(['ssh', username + '@{}'.format(remote_ip), 'sudo', 'cat', file_location],
-                              stdout=subprocess.PIPE, stderr=subprocess.PIPE
-                             )
-            )
-    std_out, std_err = pipes.communicate(timeout=20)
+    try:
+        pipes = (subprocess.Popen(['ssh', username + '@{}'.format(remote_ip),
+                                   'sudo', 'cat', file_location],
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                                 )
+                )
+        std_out, std_err = pipes.communicate(timeout=20)
+    except subprocess.TimeoutExpired:
+        print("No answer from '{}', skipping.".format(remote_ip))
+        return "HOST DOWN"
     if pipes.returncode != 0:
         if b'No such file or directory' in std_err:
             return ''
@@ -104,6 +109,8 @@ def write_config_files(unit_ips, files, dir_path, username, inc_passwords):
             print("from '{}'".format(server_ip))
             for conf_loc in files[component]:
                 conf_file = get_remote_file(server_ip, conf_loc, username)
+                if conf_file == "HOST DOWN":
+                    break
                 if not inc_passwords:
                     conf_file = password_wipe(conf_file)
                 file_name = conf_loc.replace('/', '_')

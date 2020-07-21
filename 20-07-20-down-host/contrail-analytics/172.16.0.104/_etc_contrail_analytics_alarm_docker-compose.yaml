@@ -1,0 +1,79 @@
+version: '2'
+services:
+  node-init:
+    image: "hub.juniper.net/contrail/contrail-node-init:1912.32"
+    env_file: /etc/contrail/common_analytics.env
+    environment:
+      - CONTRAIL_STATUS_IMAGE="hub.juniper.net/contrail/contrail-status:1912.32"
+    privileged: true
+    pid: host
+    network_mode: "host"
+    volumes:
+      - /usr/bin:/host/usr/bin
+      - /etc/contrail/ssl/analytics:/etc/contrail/ssl
+      - /etc/sysctl.d:/etc/sysctl.d
+      - /etc/hosts:/etc/hosts
+      - /var/log/contrail:/var/log/contrail
+      - /etc/timezone:/etc/timezone
+      - /etc/localtime:/etc/localtime
+      - /var/crashes:/var/crashes
+    logging:
+      driver: json-file
+      options:
+        max-file: "5"
+        max-size: "20m"
+
+  nodemgr:
+    image: "hub.juniper.net/contrail/contrail-nodemgr:1912.32"
+    env_file: /etc/contrail/common_analytics.env
+    environment:
+      - NODE_TYPE=analytics-alarm
+    network_mode: "host"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    volumes_from:
+      - node-init
+    depends_on:
+      - node-init
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-file: "5"
+        max-size: "20m"
+
+
+  kafka:
+    image: "hub.juniper.net/contrail/contrail-external-kafka:1912.32"
+    network_mode: "host"
+    env_file: /etc/contrail/common_analytics.env
+    environment:
+      - KAFKA_NODES=172.16.0.104
+      - ZOOKEEPER_NODES=172.16.0.102
+      - ZOOKEEPER_PORT=2181
+      - NODE_TYPE=analytics-alarm
+    volumes_from:
+      - node-init
+    depends_on:
+      - node-init
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-file: "5"
+        max-size: "20m"
+
+  alarm-gen:
+    image: "hub.juniper.net/contrail/contrail-analytics-alarm-gen:1912.32"
+    network_mode: "host"
+    env_file: /etc/contrail/common_analytics.env
+    volumes_from:
+      - node-init
+    depends_on:
+      - node-init
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-file: "5"
+        max-size: "20m"

@@ -92,9 +92,12 @@ def password_wipe(text_blob):
     """remove passwords from text"""
     new_blob = []
     for line in text_blob.splitlines():
-        if 'password' in line.lower() and 'auth_type' not in line.lower():
-            line = re.split('=| ', line)
-            new_blob.append(line[0] + ' #PASSWORD REMOVED#')
+        if 'password' in line.lower() or 'secret' in line.lower():
+            if 'auth_type' not in line.lower():
+                line = re.split('=| ', line)
+                new_blob.append(line[0] + ' #PASSWORD REMOVED#')
+            else:
+                new_blob.append(line)        
         else:
             new_blob.append(line)
     return '\n'.join(new_blob)
@@ -174,7 +177,7 @@ def cli_grab():
                                                                      "from 'juju status'")
     parser.add_argument("-f", "--get-ips-file", help="Generate ips_file from 'juju status' "
                                                      "output previously saved to a file")
-    parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare files. They must "
+    parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare. Files must "
                                                                        "exist from previous runs'")
     parser.add_argument("-m", "--diff-mode", default="normal", help="Style of diff. 'normal', "
                                                                     "'context' or 'unified'")

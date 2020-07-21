@@ -131,6 +131,9 @@ If you have previously gathered output you can skip the gathering step and only 
 ```shell
 danny@newtop:~/contrail-config-diff$ python3 contrail-config-diff.py -d unit_ips.yaml files_no_ssl.yaml 16-07-20 17-07-20
 ====================================================================================================
+16-07-20/contrail-haproxy/172.16.0.142/_etc_haproxy_haproxy.cfg
+17-07-20/contrail-haproxy/172.16.0.142/_etc_haproxy_haproxy.cfg
+
 21c21
 < CONTROL_NODES=172.16.0.102
 ---

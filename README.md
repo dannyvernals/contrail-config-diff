@@ -140,6 +140,9 @@ danny@newtop:~/contrail-config-diff$ python3 contrail-config-diff.py -d unit_ips
 > CONTROL_NODES=172.16.0.103
 
 ====================================================================================================
+16-07-20/heat/172.16.0.143/_etc_heat_heat.conf
+17-07-20/heat/172.16.0.143/_etc_heat_heat.conf
+
 86c86
 < api_server = 172.16.0.102
 ---

@@ -91,14 +91,14 @@ contrail-analytics:
 
 ## Examples
 Below contains some examples for how to run the script.  
-For all options please see ```python3 contrail-config-diff.py -h```
+For all options please see ```python3 contrail_config_diff.py -h```
 
 ### 1) Basic Operation
 The script will by default use the sepecified yaml files to obtain config files and compare them against a previous run.
 If you are running the script for the first time, just mkdir the directory to compare against.
 ```shell
 danny@newtop:~/contrail-config-diff$ mkdir dummy_dir
-danny@newtop:~/contrail-config-diff$ python3 contrail-config-diff.py unit_ips.yaml files_no_ssl.yaml 17-07-20 dummy_dir
+danny@newtop:~/contrail-config-diff$ python3 contrail_config_diff.py unit_ips.yaml files_no_ssl.yaml 17-07-20 dummy_dir
 getting 'contrail-agent' data
 from '172.16.0.134'
 getting 'contrail-analytics' data
@@ -129,7 +129,7 @@ Obviously there are no files to compare against if this is the first time you've
 If you have previously gathered output you can skip the gathering step and only execute a diff on the files
 
 ```shell
-danny@newtop:~/contrail-config-diff$ python3 contrail-config-diff.py -d unit_ips.yaml files_no_ssl.yaml 16-07-20 17-07-20
+danny@newtop:~/contrail-config-diff$ python3 contrail_config_diff.py -d unit_ips.yaml files_no_ssl.yaml 16-07-20 17-07-20
 ====================================================================================================
 16-07-20/contrail-haproxy/172.16.0.142/_etc_haproxy_haproxy.cfg
 17-07-20/contrail-haproxy/172.16.0.142/_etc_haproxy_haproxy.cfg
@@ -157,7 +157,7 @@ Below shows using a juju status via a subprocess within the script but you can a
 
 The output will be saved to the IPs file specified on the command line for future use
 ```
-danny@newtop:~/contrail-config-diff$ python3 contrail-config-diff.py -g unit_ips.yaml files_no_ssl.yaml 16-07-20 17-07-20
+danny@newtop:~/contrail-config-diff$ python3 contrail_config_diff.py -g unit_ips.yaml files_no_ssl.yaml 16-07-20 17-07-20
 getting juju status
 generating and writing component IPs file from 'juju status' output
 output directory already exists, old files will be deleted, proceed?, y/n:y

@@ -126,8 +126,13 @@ def write_config_files(unit_ips, files, dir_path, username, inc_passwords):
 def diff_files(old_dir, new_dir, diff_mode):
     """Instantiate a file compare object against the specified directories.
     call 'recurse_diff_files()' to compare all files in those directories"""
-    dcmp = filecmp.dircmp(old_dir, new_dir)
-    recurse_diff_files(dcmp, diff_mode)
+    if os.path.exists(old_dir):
+        dcmp = filecmp.dircmp(old_dir, new_dir)
+        recurse_diff_files(dcmp, diff_mode)
+    else:
+        print(" old directory: '{}' doesn't exist.  Working on the assumption this is the first time "
+              "the script has run so stopping diff".format(old_dir)
+             )
 
 
 def get_file_diffs(dcmp, file_name, diff_mode):

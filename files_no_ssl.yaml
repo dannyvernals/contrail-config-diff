@@ -13,6 +13,8 @@ contrail-agent:
   - /etc/contrail/vrouter/docker-compose.yaml
   - /etc/contrail/contrail-vrouter-agent.conf
   - /etc/nova/nova.conf
+  - /etc/systemd/system.conf
+  - /proc/cmdline
 
 contrail-controller:
   - /etc/contrail/common_web.env

@@ -97,7 +97,6 @@ For all options please see ```python3 contrail_config_diff.py -h```
 The script will by default use the sepecified yaml files to obtain config files and compare them against a previous run.
 If you are running the script for the first time (i.e. the 'old' directory doesn't exist) the script will not execute a diff.
 ```
-danny@newtop:~/contrail-config-diff$ mkdir dummy_dir
 danny@newtop:~/contrail-config-diff$ python3 contrail_config_diff.py unit_ips.yaml files_no_ssl.yaml 17-07-20 dummy_dir
 getting 'contrail-agent' data
 from '172.16.0.134'

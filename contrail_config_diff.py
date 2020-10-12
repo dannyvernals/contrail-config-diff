@@ -1,5 +1,5 @@
 """ Grab contrail config files and compare them against previous versions"""
-
+"""Developing feature to use git as backend storage for the data instead of flat files"""
 import subprocess
 import os
 import shutil

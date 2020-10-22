@@ -1,14 +1,18 @@
-contrail-agent:
-- 172.16.0.134
-contrail-analytics:
-- 172.16.0.104
-contrail-analyticsdb:
-- 172.16.0.144
-contrail-controller:
-- 172.16.0.102
-contrail-haproxy:
-- 172.16.0.142
-heat:
-- 172.16.0.143
-neutron:
-- 172.16.0.103
+contrail-analytics: !!set
+  172.16.0.92: null
+contrail-analyticsdb: !!set
+  172.16.0.94: null
+contrail-command: !!set
+  172.16.0.89: null
+contrail-controller: !!set
+  172.16.0.91: null
+contrail-haproxy: !!set
+  172.16.0.87: null
+contrail-keystone-auth: !!set
+  172.16.0.88: null
+heat: !!set
+  172.16.0.90: null
+neutron-api: !!set
+  172.16.0.93: null
+nova-compute: !!set
+  172.16.0.79: null

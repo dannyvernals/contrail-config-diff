@@ -8,37 +8,42 @@ import pathlib
 import argparse
 import re
 import yaml
+from juju import loop
+from juju.model import Model
 
 
-def get_juju_status():
-    """get juju status from command line"""
-    pipes = (subprocess.Popen(['juju', 'status'], stdout=subprocess.PIPE, stderr=subprocess.PIPE))
-    std_out, std_err = pipes.communicate(timeout=20)
-    if pipes.returncode != 0:
-        raise Exception(std_err.strip())
-    return std_out.decode('utf-8')
+async def get_juju_status_api():
+    model = Model()
+    #await model.connect(username='admin', password='c0ntrail123')
+    await model.connect()
+    status = await model.get_status()
+    await model.disconnect()
+    return status
 
 
-def parse_juju_status(juju_status):
-    """create a dict of contrail component IPs extracted from a 'juju status'"""
-    unit_ips = {}
-    juju_status = juju_status.split("\n")
-    for line in juju_status:
-        if line.startswith('  contrail-agent') and '/' in line:
-            unit_ips.setdefault('contrail-agent', list()).append(str(line.split()[3]))
-        elif line.startswith('contrail-controller/'):
-            unit_ips.setdefault('contrail-controller', list()).append(str(line.split()[4]))
-        elif line.startswith('contrail-analytics/'):
-            unit_ips.setdefault('contrail-analytics', list()).append(str(line.split()[4]))
-        elif line.startswith('contrail-analyticsdb/'):
-            unit_ips.setdefault('contrail-analyticsdb', list()).append(str(line.split()[4]))
-        elif line.startswith('contrail-haproxy/'):
-            unit_ips.setdefault('contrail-haproxy', list()).append(str(line.split()[4]))
-        elif line.startswith('heat/'):
-            unit_ips.setdefault('heat', list()).append(str(line.split()[4]))
-        elif line.startswith('neutron-api/'):
-            unit_ips.setdefault('neutron', list()).append(str(line.split()[4]))
-    return unit_ips
+def parse_juju_status_api(juju_status):
+    ip_unit_map = {}
+    for juju_app, juju_app_data in juju_status.applications.items():
+        if 'contrail' in juju_app:
+            if juju_app_data.subordinate_to:
+                for parent_app in juju_app_data.subordinate_to:
+                    for unit, unit_data in juju_status['applications'][parent_app]['units'].items():
+                        ip_unit_map.setdefault(unit.split('/')[0], set()).add(unit_data.public_address)
+            else:
+                for unit, unit_data in juju_app_data.units.items():
+                    ip_unit_map.setdefault(unit.split('/')[0], set()).add(unit_data.public_address)
+    return ip_unit_map
+
+
+def get_juju_charm_versions(juju_status):
+    status_list = []
+    format_string = '{:25} {:50} {:30} {:10}'
+    status_list.append(format_string.format('# application', 'charm', 'unit', 'software version'))
+    for juju_app, juju_app_data in juju_status.applications.items():
+        for unit, unit_data in juju_app_data.units.items():
+            status_list.append(format_string.format(juju_app, juju_app_data.charm, unit, unit_data.workload_version))
+    return '\n'.join(status_list)
+
 
 def read_file_lines(file_path):
     """get text from a file as list of lines"""
@@ -55,8 +60,8 @@ def read_file(file_path):
 
 def read_conf_files(unit_ip_file, remote_files):
     """load settings from the specified yaml files"""
-    conf_files = yaml.load(read_file(remote_files))
-    unit_ips = yaml.load(read_file(unit_ip_file))
+    conf_files = yaml.safe_load(read_file(remote_files))
+    unit_ips = yaml.safe_load(read_file(unit_ip_file))
     return unit_ips, conf_files
 
 
@@ -65,6 +70,21 @@ def write_file(contents, file_location):
     with open(file_location, 'w+') as write_fh:
         write_fh.write(contents)
     os.chmod(file_location, 0o600)
+
+
+def password_wipe(text_blob):
+    """remove passwords from text"""
+    new_blob = []
+    for line in text_blob.splitlines():
+        if 'password' in line.lower() or 'secret' in line.lower():
+            if 'auth_type' not in line.lower():
+                line = re.split('=| ', line)
+                new_blob.append(line[0] + ' #PASSWORD REMOVED#')
+            else:
+                new_blob.append(line)        
+        else:
+            new_blob.append(line)
+    return '\n'.join(new_blob)
 
 
 def get_remote_file(remote_ip, file_location, username):
@@ -88,19 +108,19 @@ def get_remote_file(remote_ip, file_location, username):
     return std_out.decode('utf-8')
 
 
-def password_wipe(text_blob):
-    """remove passwords from text"""
-    new_blob = []
-    for line in text_blob.splitlines():
-        if 'password' in line.lower() or 'secret' in line.lower():
-            if 'auth_type' not in line.lower():
-                line = re.split('=| ', line)
-                new_blob.append(line[0] + ' #PASSWORD REMOVED#')
-            else:
-                new_blob.append(line)        
-        else:
-            new_blob.append(line)
-    return '\n'.join(new_blob)
+def scrape_server(server_ip, component, files, dir_path, username, inc_passwords):
+    print("from '{}'".format(server_ip))
+    for conf_loc in files[component]:
+        conf_file =  get_remote_file(server_ip, conf_loc, username)
+        if conf_file == "HOST DOWN":
+            break
+        if not inc_passwords:
+            conf_file = password_wipe(conf_file)
+        file_name = conf_loc.replace('/', '_')
+        local_path = '{}/{}/{}'.format(dir_path, component, server_ip)
+        pathlib.Path(local_path).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(local_path).chmod(0o700)
+        write_file(str(conf_file), local_path + '/' + file_name)
 
 
 def write_config_files(unit_ips, files, dir_path, username, inc_passwords):
@@ -109,18 +129,7 @@ def write_config_files(unit_ips, files, dir_path, username, inc_passwords):
     for component, server_ips in unit_ips.items():
         print("getting '{}' data".format(component))
         for server_ip in server_ips:
-            print("from '{}'".format(server_ip))
-            for conf_loc in files[component]:
-                conf_file = get_remote_file(server_ip, conf_loc, username)
-                if conf_file == "HOST DOWN":
-                    break
-                if not inc_passwords:
-                    conf_file = password_wipe(conf_file)
-                file_name = conf_loc.replace('/', '_')
-                local_path = '{}/{}/{}'.format(dir_path, component, server_ip)
-                pathlib.Path(local_path).mkdir(parents=True, exist_ok=True)
-                pathlib.Path(local_path).chmod(0o700)
-                write_file(str(conf_file), local_path + '/' + file_name)
+            scrape_server(server_ip, component, files, dir_path, username, inc_passwords)
 
 
 def diff_files(old_dir, new_dir, diff_mode):
@@ -180,8 +189,6 @@ def cli_grab():
     parser.add_argument("compare_dir", help="Location of config files to compare against")
     parser.add_argument("-g", "--get-ips", action="store_true", help="Generate ips_file "
                                                                      "from 'juju status'")
-    parser.add_argument("-f", "--get-ips-file", help="Generate ips_file from 'juju status' "
-                                                     "output previously saved to a file")
     parser.add_argument("-d", "--diff-only", action="store_true", help="Only compare. Files must "
                                                                        "exist from previous runs'")
     parser.add_argument("-m", "--diff-mode", default="normal", help="Style of diff. 'normal', "
@@ -219,24 +226,22 @@ def check_dir(output_dir):
 def main():
     """main script body"""
     args = cli_grab()
-    if args['get_ips']:
+    if not args['diff_only'] or args['get_ips']:
         print("getting juju status")
-        status = get_juju_status()
+        juju_status = loop.run(get_juju_status_api())
+    if args['get_ips']:
         print("generating and writing component IPs file from 'juju status' output")
-        unit_ips = parse_juju_status(status)
-        write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])
-    elif args['get_ips_file']:
-        status = read_file(args['get_ips_file'])
-        unit_ips = parse_juju_status(status)
+        unit_ips = parse_juju_status_api(juju_status)
         write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])
     unit_ips, conf_files = read_conf_files(args['ips_file'], args['config_file'])
     if not args['diff_only']:
         check_dir(args['output_dir'])
+        write_file(get_juju_charm_versions(juju_status), args['output_dir'] + '/juju_apps.txt')
         write_config_files(unit_ips, conf_files,
                            args['output_dir'], args['username'], args['inc_passwords']
                           )
     diff_files(args['compare_dir'], args['output_dir'], args['diff_mode'])
-
+    print(parse_juju_status_api(juju_status))
 
 if __name__ == '__main__':
     main()

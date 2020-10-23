@@ -1,7 +1,7 @@
 heat:
   - /etc/heat/heat.conf
 
-contrail-haproxy:
+haproxy:
   - /etc/haproxy/haproxy.cfg
 
 neutron-api:

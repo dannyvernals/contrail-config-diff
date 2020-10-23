@@ -27,11 +27,17 @@ def parse_juju_status_api(juju_status):
         if 'contrail' in juju_app:
             if juju_app_data.subordinate_to:
                 for parent_app in juju_app_data.subordinate_to:
-                    for unit, unit_data in juju_status['applications'][parent_app]['units'].items():
-                        ip_unit_map.setdefault(unit.split('/')[0], set()).add(unit_data.public_address)
+                    std_app_name = re.split(':|/', juju_status['applications'][parent_app].charm)[-1]
+                    std_app_name = '-'.join(std_app_name.split('-')[0:-1])
+                    print(std_app_name)
+                    for unit_data in juju_status['applications'][parent_app]['units'].values():
+                        ip_unit_map.setdefault(std_app_name, set()).add(unit_data.public_address)
             else:
-                for unit, unit_data in juju_app_data.units.items():
-                    ip_unit_map.setdefault(unit.split('/')[0], set()).add(unit_data.public_address)
+                std_app_name = re.split(':|/', juju_app_data.charm)[-1]
+                std_app_name = '-'.join(std_app_name.split('-')[0:-1])
+                print(std_app_name)
+                for unit_data in juju_app_data.units.values():
+                    ip_unit_map.setdefault(std_app_name, set()).add(unit_data.public_address)
     return ip_unit_map
 
 
@@ -41,7 +47,9 @@ def get_juju_charm_versions(juju_status):
     status_list.append(format_string.format('# application', 'charm', 'unit', 'software version'))
     for juju_app, juju_app_data in juju_status.applications.items():
         for unit, unit_data in juju_app_data.units.items():
-            status_list.append(format_string.format(juju_app, juju_app_data.charm, unit, unit_data.workload_version))
+            status_list.append(format_string.format(juju_app, juju_app_data.charm, 
+                                                    unit, unit_data.workload_version
+                                                    ))
     return '\n'.join(status_list)
 
 
@@ -241,7 +249,7 @@ def main():
                            args['output_dir'], args['username'], args['inc_passwords']
                           )
     diff_files(args['compare_dir'], args['output_dir'], args['diff_mode'])
-    print(parse_juju_status_api(juju_status))
+
 
 if __name__ == '__main__':
     main()

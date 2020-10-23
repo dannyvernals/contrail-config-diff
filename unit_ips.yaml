@@ -6,10 +6,10 @@ contrail-command: !!set
   172.16.0.89: null
 contrail-controller: !!set
   172.16.0.91: null
-contrail-haproxy: !!set
-  172.16.0.87: null
 contrail-keystone-auth: !!set
   172.16.0.88: null
+haproxy: !!set
+  172.16.0.87: null
 heat: !!set
   172.16.0.90: null
 neutron-api: !!set

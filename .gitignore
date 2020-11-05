@@ -1,9 +1,5 @@
-run1
-run2
-juju.out
-16-07-20
-17-07-20
-20-07-20
-21-07-20
-*-07-20
-dummy_dir
+tmp
+configs
+repos
+maintenances
+logs

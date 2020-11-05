@@ -1,14 +1,14 @@
 heat:
   - /etc/heat/heat.conf
 
-contrail-haproxy:
+haproxy:
   - /etc/haproxy/haproxy.cfg
 
-neutron:
+neutron-api:
   - /etc/neutron/neutron.conf
   - /etc/neutron/plugins/opencontrail/ContrailPlugin.ini
 
-contrail-agent:
+nova-compute:
   - /etc/contrail/common_vrouter.env
   - /etc/contrail/vrouter/docker-compose.yaml
   - /etc/contrail/contrail-vrouter-agent.conf
@@ -38,3 +38,8 @@ contrail-analytics:
   - /etc/contrail/redis.env
   - /etc/contrail/common_analytics.env
 
+contrail-command:
+  - /etc/contrail/cloud-config.tmpl
+
+contrail-keystone-auth:
+ - /proc/cmdline

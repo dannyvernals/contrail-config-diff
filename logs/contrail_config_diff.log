@@ -1,0 +1,122 @@
+2020-11-05 12:19:37,494 - getting juju status
+2020-11-05 12:19:37,700 - generating and writing component IPs file from 'juju status' output
+2020-11-05 12:19:37,712 - getting 'contrail-analytics' data
+2020-11-05 12:19:37,712 - from '172.16.0.111'
+2020-11-05 12:19:43,969 - getting 'contrail-analyticsdb' data
+2020-11-05 12:19:43,970 - from '172.16.0.142'
+2020-11-05 12:19:46,015 - getting 'contrail-command' data
+2020-11-05 12:19:46,015 - from '172.16.0.136'
+2020-11-05 12:19:46,908 - getting 'contrail-controller' data
+2020-11-05 12:19:46,909 - from '172.16.0.110'
+2020-11-05 12:19:55,108 - getting 'contrail-keystone-auth' data
+2020-11-05 12:19:55,108 - from '172.16.0.105'
+2020-11-05 12:19:56,063 - getting 'haproxy' data
+2020-11-05 12:19:56,064 - from '172.16.0.108'
+2020-11-05 12:19:56,995 - getting 'heat' data
+2020-11-05 12:19:56,996 - from '172.16.0.133'
+2020-11-05 12:19:57,980 - getting 'neutron-api' data
+2020-11-05 12:19:57,980 - from '172.16.0.140'
+2020-11-05 12:20:00,017 - getting 'nova-compute' data
+2020-11-05 12:20:00,017 - from '172.16.0.125'
+2020-11-05 12:45:14,756 - getting juju status
+2020-11-05 12:45:14,970 - generating and writing component IPs file from 'juju status' output
+2020-11-05 12:45:14,979 - b'Initialised empty Git repository in /home/danny/vm-shared-disk/script_clones/sdn/contrail-config-diff/repos/test-repo/.git/\n'
+2020-11-05 12:45:14,979 - b''
+2020-11-05 12:45:14,979 - getting 'contrail-analytics' data
+2020-11-05 12:45:14,979 - from '172.16.0.111'
+2020-11-05 12:45:21,344 - getting 'contrail-analyticsdb' data
+2020-11-05 12:45:21,344 - from '172.16.0.142'
+2020-11-05 12:45:23,487 - getting 'contrail-command' data
+2020-11-05 12:45:23,487 - from '172.16.0.136'
+2020-11-05 12:45:24,362 - getting 'contrail-controller' data
+2020-11-05 12:45:24,363 - from '172.16.0.110'
+2020-11-05 12:45:32,618 - getting 'contrail-keystone-auth' data
+2020-11-05 12:45:32,619 - from '172.16.0.105'
+2020-11-05 12:45:33,571 - getting 'haproxy' data
+2020-11-05 12:45:33,572 - from '172.16.0.108'
+2020-11-05 12:45:34,518 - getting 'heat' data
+2020-11-05 12:45:34,518 - from '172.16.0.133'
+2020-11-05 12:45:35,523 - getting 'neutron-api' data
+2020-11-05 12:45:35,524 - from '172.16.0.140'
+2020-11-05 12:45:37,605 - getting 'nova-compute' data
+2020-11-05 12:45:37,606 - from '172.16.0.125'
+2020-11-05 12:45:42,539 - b''
+2020-11-05 12:45:42,539 - b''
+2020-11-05 12:45:42,550 - b'[master (root-commit) 7167106] blah\n 29 files changed, 1743 insertions(+)\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_analytics_alarm_docker-compose.yaml\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_analytics_docker-compose.yaml\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_analytics_snmp_docker-compose.yaml\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_common_analytics.env\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_redis.env\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_redis_docker-compose.yaml\n create mode 100644 contrail-analyticsdb/172.16.0.142/_etc_contrail_analytics_database_docker-compose.yaml\n create mode 100644 contrail-analyticsdb/172.16.0.142/_etc_contrail_common_analyticsdb.env\n create mode 100644 contrail-command/172.16.0.136/_etc_contrail_cloud-config.tmpl\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_common_config.env\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_common_web.env\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_config_api_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_config_database_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_control_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_redis.env\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_redis_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_webui_docker-compose.yaml\n create mode 100644 contrail-keystone-auth/172.16.0.105/_proc_cmdline\n create mode 100644 haproxy/172.16.0.108/_etc_haproxy_haproxy.cfg\n create mode 100644 heat/172.16.0.133/_etc_heat_heat.conf\n create mode 100644 juju_apps.txt\n create mode 100644 neutron-api/172.16.0.140/_etc_neutron_neutron.conf\n create mode 100644 neutron-api/172.16.0.140/_etc_neutron_plugins_opencontrail_ContrailPlugin.ini\n create mode 100644 nova-compute/172.16.0.125/_etc_contrail_common_vrouter.env\n create mode 100644 nova-compute/172.16.0.125/_etc_contrail_contrail-vrouter-agent.conf\n create mode 100644 nova-compute/172.16.0.125/_etc_contrail_vrouter_docker-compose.yaml\n create mode 100644 nova-compute/172.16.0.125/_etc_nova_nova.conf\n create mode 100644 nova-compute/172.16.0.125/_etc_systemd_system.conf\n create mode 100644 nova-compute/172.16.0.125/_proc_cmdline\n'
+2020-11-05 12:45:42,550 - b''
+2020-11-05 12:48:56,188 - getting juju status
+2020-11-05 12:48:56,399 - generating and writing component IPs file from 'juju status' output
+2020-11-05 12:48:56,409 - b'Initialised empty Git repository in /home/danny/vm-shared-disk/script_clones/sdn/contrail-config-diff/repos/test-repo/.git/\n'
+2020-11-05 12:48:56,409 - b''
+2020-11-05 12:48:56,409 - getting 'contrail-analytics' data
+2020-11-05 12:48:56,409 - from '172.16.0.111'
+2020-11-05 12:49:02,538 - getting 'contrail-analyticsdb' data
+2020-11-05 12:49:02,539 - from '172.16.0.142'
+2020-11-05 12:49:04,586 - getting 'contrail-command' data
+2020-11-05 12:49:04,587 - from '172.16.0.136'
+2020-11-05 12:49:05,532 - getting 'contrail-controller' data
+2020-11-05 12:49:05,532 - from '172.16.0.110'
+2020-11-05 12:49:14,117 - getting 'contrail-keystone-auth' data
+2020-11-05 12:49:14,118 - from '172.16.0.105'
+2020-11-05 12:49:15,023 - getting 'haproxy' data
+2020-11-05 12:49:15,024 - from '172.16.0.108'
+2020-11-05 12:49:15,958 - getting 'heat' data
+2020-11-05 12:49:15,959 - from '172.16.0.133'
+2020-11-05 12:49:16,930 - getting 'neutron-api' data
+2020-11-05 12:49:16,931 - from '172.16.0.140'
+2020-11-05 12:49:18,955 - getting 'nova-compute' data
+2020-11-05 12:49:18,956 - from '172.16.0.125'
+2020-11-05 12:49:23,694 - b''
+2020-11-05 12:49:23,694 - b''
+2020-11-05 12:49:23,706 - b'[master (root-commit) a60814a] blah\n 29 files changed, 1743 insertions(+)\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_analytics_alarm_docker-compose.yaml\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_analytics_docker-compose.yaml\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_analytics_snmp_docker-compose.yaml\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_common_analytics.env\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_redis.env\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_redis_docker-compose.yaml\n create mode 100644 contrail-analyticsdb/172.16.0.142/_etc_contrail_analytics_database_docker-compose.yaml\n create mode 100644 contrail-analyticsdb/172.16.0.142/_etc_contrail_common_analyticsdb.env\n create mode 100644 contrail-command/172.16.0.136/_etc_contrail_cloud-config.tmpl\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_common_config.env\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_common_web.env\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_config_api_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_config_database_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_control_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_redis.env\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_redis_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_webui_docker-compose.yaml\n create mode 100644 contrail-keystone-auth/172.16.0.105/_proc_cmdline\n create mode 100644 haproxy/172.16.0.108/_etc_haproxy_haproxy.cfg\n create mode 100644 heat/172.16.0.133/_etc_heat_heat.conf\n create mode 100644 juju_apps.txt\n create mode 100644 neutron-api/172.16.0.140/_etc_neutron_neutron.conf\n create mode 100644 neutron-api/172.16.0.140/_etc_neutron_plugins_opencontrail_ContrailPlugin.ini\n create mode 100644 nova-compute/172.16.0.125/_etc_contrail_common_vrouter.env\n create mode 100644 nova-compute/172.16.0.125/_etc_contrail_contrail-vrouter-agent.conf\n create mode 100644 nova-compute/172.16.0.125/_etc_contrail_vrouter_docker-compose.yaml\n create mode 100644 nova-compute/172.16.0.125/_etc_nova_nova.conf\n create mode 100644 nova-compute/172.16.0.125/_etc_systemd_system.conf\n create mode 100644 nova-compute/172.16.0.125/_proc_cmdline\n'
+2020-11-05 12:49:23,706 - b''
+2020-11-05 12:56:59,262 - getting juju status
+2020-11-05 12:56:59,473 - generating and writing component IPs file from 'juju status' output
+2020-11-05 12:56:59,483 - b'Initialised empty Git repository in /home/danny/vm-shared-disk/script_clones/sdn/contrail-config-diff/repos/test-repo/.git/\n'
+2020-11-05 12:56:59,483 - b''
+2020-11-05 12:56:59,483 - getting 'contrail-analytics' data
+2020-11-05 12:56:59,483 - from '172.16.0.111'
+2020-11-05 12:57:05,696 - getting 'contrail-analyticsdb' data
+2020-11-05 12:57:05,696 - from '172.16.0.142'
+2020-11-05 12:57:07,781 - getting 'contrail-command' data
+2020-11-05 12:57:07,782 - from '172.16.0.136'
+2020-11-05 12:57:08,707 - getting 'contrail-controller' data
+2020-11-05 12:57:08,708 - from '172.16.0.110'
+2020-11-05 12:57:17,403 - getting 'contrail-keystone-auth' data
+2020-11-05 12:57:17,403 - from '172.16.0.105'
+2020-11-05 12:57:18,300 - getting 'haproxy' data
+2020-11-05 12:57:18,301 - from '172.16.0.108'
+2020-11-05 12:57:19,268 - getting 'heat' data
+2020-11-05 12:57:19,269 - from '172.16.0.133'
+2020-11-05 12:57:20,260 - getting 'neutron-api' data
+2020-11-05 12:57:20,261 - from '172.16.0.140'
+2020-11-05 12:57:22,175 - getting 'nova-compute' data
+2020-11-05 12:57:22,175 - from '172.16.0.125'
+2020-11-05 12:57:27,035 - b''
+2020-11-05 12:57:27,036 - b''
+2020-11-05 12:57:27,044 - b'[master (root-commit) 3edbf44] Thu Nov  5 12:57:27 2020\n 29 files changed, 1743 insertions(+)\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_analytics_alarm_docker-compose.yaml\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_analytics_docker-compose.yaml\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_analytics_snmp_docker-compose.yaml\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_common_analytics.env\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_redis.env\n create mode 100644 contrail-analytics/172.16.0.111/_etc_contrail_redis_docker-compose.yaml\n create mode 100644 contrail-analyticsdb/172.16.0.142/_etc_contrail_analytics_database_docker-compose.yaml\n create mode 100644 contrail-analyticsdb/172.16.0.142/_etc_contrail_common_analyticsdb.env\n create mode 100644 contrail-command/172.16.0.136/_etc_contrail_cloud-config.tmpl\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_common_config.env\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_common_web.env\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_config_api_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_config_database_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_control_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_redis.env\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_redis_docker-compose.yaml\n create mode 100644 contrail-controller/172.16.0.110/_etc_contrail_webui_docker-compose.yaml\n create mode 100644 contrail-keystone-auth/172.16.0.105/_proc_cmdline\n create mode 100644 haproxy/172.16.0.108/_etc_haproxy_haproxy.cfg\n create mode 100644 heat/172.16.0.133/_etc_heat_heat.conf\n create mode 100644 juju_apps.txt\n create mode 100644 neutron-api/172.16.0.140/_etc_neutron_neutron.conf\n create mode 100644 neutron-api/172.16.0.140/_etc_neutron_plugins_opencontrail_ContrailPlugin.ini\n create mode 100644 nova-compute/172.16.0.125/_etc_contrail_common_vrouter.env\n create mode 100644 nova-compute/172.16.0.125/_etc_contrail_contrail-vrouter-agent.conf\n create mode 100644 nova-compute/172.16.0.125/_etc_contrail_vrouter_docker-compose.yaml\n create mode 100644 nova-compute/172.16.0.125/_etc_nova_nova.conf\n create mode 100644 nova-compute/172.16.0.125/_etc_systemd_system.conf\n create mode 100644 nova-compute/172.16.0.125/_proc_cmdline\n'
+2020-11-05 12:57:27,045 - b''
+2020-11-05 12:59:29,328 - getting juju status
+2020-11-05 12:59:29,534 - generating and writing component IPs file from 'juju status' output
+2020-11-05 12:59:29,539 - getting 'contrail-analytics' data
+2020-11-05 12:59:29,539 - from '172.16.0.111'
+2020-11-05 12:59:35,611 - getting 'contrail-analyticsdb' data
+2020-11-05 12:59:35,612 - from '172.16.0.142'
+2020-11-05 12:59:37,712 - getting 'contrail-command' data
+2020-11-05 12:59:37,712 - from '172.16.0.136'
+2020-11-05 12:59:38,563 - getting 'contrail-controller' data
+2020-11-05 12:59:38,564 - from '172.16.0.110'
+2020-11-05 12:59:47,108 - getting 'contrail-keystone-auth' data
+2020-11-05 12:59:47,108 - from '172.16.0.105'
+2020-11-05 12:59:48,021 - getting 'haproxy' data
+2020-11-05 12:59:48,022 - from '172.16.0.108'
+2020-11-05 12:59:48,952 - getting 'heat' data
+2020-11-05 12:59:48,952 - from '172.16.0.133'
+2020-11-05 12:59:49,922 - getting 'neutron-api' data
+2020-11-05 12:59:49,923 - from '172.16.0.140'
+2020-11-05 12:59:51,871 - getting 'nova-compute' data
+2020-11-05 12:59:51,872 - from '172.16.0.125'
+2020-11-05 12:59:56,639 - b''
+2020-11-05 12:59:56,639 - b''
+2020-11-05 12:59:56,645 - b'[master aec4565] automated commit\n 1 file changed, 1 insertion(+), 1 deletion(-)\n'
+2020-11-05 12:59:56,645 - b''

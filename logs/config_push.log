@@ -1,0 +1,20 @@
+2020-11-05 12:14:15,430 - getting juju status
+2020-11-05 12:14:15,634 - generating and writing component IPs file from 'juju status' output
+2020-11-05 12:14:17,220 - getting 'contrail-analytics' data
+2020-11-05 12:14:17,220 - from '172.16.0.111'
+2020-11-05 12:14:23,420 - getting 'contrail-analyticsdb' data
+2020-11-05 12:14:23,421 - from '172.16.0.142'
+2020-11-05 12:14:25,527 - getting 'contrail-command' data
+2020-11-05 12:14:25,528 - from '172.16.0.136'
+2020-11-05 12:14:26,412 - getting 'contrail-controller' data
+2020-11-05 12:14:26,413 - from '172.16.0.110'
+2020-11-05 12:14:34,937 - getting 'contrail-keystone-auth' data
+2020-11-05 12:14:34,937 - from '172.16.0.105'
+2020-11-05 12:14:35,819 - getting 'haproxy' data
+2020-11-05 12:14:35,819 - from '172.16.0.108'
+2020-11-05 12:14:36,766 - getting 'heat' data
+2020-11-05 12:14:36,767 - from '172.16.0.133'
+2020-11-05 12:14:37,737 - getting 'neutron-api' data
+2020-11-05 12:14:37,738 - from '172.16.0.140'
+2020-11-05 12:14:39,683 - getting 'nova-compute' data
+2020-11-05 12:14:39,684 - from '172.16.0.125'

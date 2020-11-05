@@ -311,7 +311,7 @@ def cli_grab():
 def main(args):
     """main script body"""
     if args['when'] == 'diff':
-        file_dir = './maintenances/' + args['maint_name'] + '/'
+        file_dir =   './maintenances/' + args['maint_name'] + '/'
         diff_files(file_dir + 'before', file_dir + 'after', 'normal')
         exit()
     LOGGER.info("getting juju status")
@@ -322,21 +322,22 @@ def main(args):
         write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])
     unit_ips, conf_files = read_conf_files(args['ips_file'], args['config_file'])
     if args['maint_name']:
-        output_dir = './maintenances/' + args['maint_name'] + '/' + args['when']
+        output_dir =  './maintenances/' + args['maint_name'] + '/' + args['when']
         check_dir(output_dir)
     elif args['repo_name']:
-        output_dir = './repos/' + args['repo_name']
+        output_dir =  './repos/' + args['repo_name']
         check_dir_git(output_dir)
     write_file(get_juju_charm_versions(juju_status), output_dir + '/juju_apps.txt')
     write_config_files(unit_ips, conf_files,
                        output_dir, args['username'], args['inc_passwords']
                       )
     if args['maint_name'] and args['when'] == 'after':
-        compare_dir = './maintenances/' + args['maint_name'] + '/before'
+        compare_dir =  '/.maintenances/' + args['maint_name'] + '/before'
         diff_files(compare_dir, output_dir, 'normal')
 
 
 if __name__ == '__main__':
+    os.chdir('/'.join(os.path.realpath(__file__).split('/')[:-1]))
     ARGS = cli_grab()
     if ARGS['maint_name']:
         MODE = 'maint'

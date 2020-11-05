@@ -1,5 +1,4 @@
-""" Grab contrail config files and compare them against previous versions
-Developing feature to use git as backend storage for the data instead of flat files"""
+""" Grab contrail config files and compare them against previous versions"""
 import subprocess
 import sys
 import os
@@ -124,16 +123,6 @@ def write_config_files(unit_ips, files, dir_path, username, inc_passwords):
         commit_git(dir_path)
 
 
-def diff_files(old_dir, new_dir, diff_mode):
-    """Instantiate a file compare object against the specified directories.
-    call 'recurse_diff_files()' to compare all files in those directories"""
-    if os.path.exists(old_dir) and os.path.exists(new_dir):
-        dcmp = filecmp.dircmp(old_dir, new_dir)
-        recurse_diff_files(dcmp, diff_mode)
-    else:
-        LOGGER.info("missing directory: '{}' or '{}'\nstopping diff".format(old_dir, new_dir))
-
-
 def get_file_diffs(dcmp, file_name, diff_mode):
     """Echo file diffs to stdout"""
     left_file = dcmp.left + '/' + file_name
@@ -169,6 +158,15 @@ def recurse_diff_files(dcmp, diff_mode):
     for sub_dcmp in dcmp.subdirs.values():
         recurse_diff_files(sub_dcmp, diff_mode)
 
+
+def diff_files(old_dir, new_dir, diff_mode):
+    """Instantiate a file compare object against the specified directories.
+    call 'recurse_diff_files()' to compare all files in those directories"""
+    if os.path.exists(old_dir) and os.path.exists(new_dir):
+        dcmp = filecmp.dircmp(old_dir, new_dir)
+        recurse_diff_files(dcmp, diff_mode)
+    else:
+        LOGGER.info("missing directory: '{}' or '{}'\nstopping diff".format(old_dir, new_dir))
 
 async def get_juju_status_api():
     """Connect to current juju model and obtain a status.

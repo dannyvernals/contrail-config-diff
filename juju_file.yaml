@@ -1,0 +1,62 @@
+maas-controller:
+  details:
+    uuid: 024a7f3c-c217-467d-83eb-440eae1c8264
+    controller-uuid: 024a7f3c-c217-467d-83eb-440eae1c8264
+    api-endpoints: ['172.16.0.7:17070']
+    cloud: maas
+    region: default
+    agent-version: 2.7.6
+    agent-git-commit: 4da406fb326d7a1255f97a7391056641ee86715b
+    controller-model-version: 2.7.6
+    mongo-version: 3.6.3
+    ca-fingerprint: C4:A9:83:2A:CE:7C:14:FD:63:08:8B:A1:7D:7A:65:16:58:77:BC:D4:57:B0:24:0E:2F:59:10:76:05:AA:94:F2
+    ca-cert: |
+      -----BEGIN CERTIFICATE-----
+      MIIErTCCAxWgAwIBAgIVAPgi4zFHy54B0iWLXdEa3yueoK48MA0GCSqGSIb3DQEB
+      CwUAMG4xDTALBgNVBAoTBGp1anUxLjAsBgNVBAMMJWp1anUtZ2VuZXJhdGVkIENB
+      IGZvciBtb2RlbCAianVqdS1jYSIxLTArBgNVBAUTJGZiN2I2NmVlLWZlMGMtNDdi
+      YS04YjBmLWFmYzA4NTdlOTYwYjAeFw0yMDA0MjAxMjI0MTRaFw0zMDA0MjcxMjI0
+      MTRaMG4xDTALBgNVBAoTBGp1anUxLjAsBgNVBAMMJWp1anUtZ2VuZXJhdGVkIENB
+      IGZvciBtb2RlbCAianVqdS1jYSIxLTArBgNVBAUTJGZiN2I2NmVlLWZlMGMtNDdi
+      YS04YjBmLWFmYzA4NTdlOTYwYjCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoC
+      ggGBAKGvwh52G5b6Y7ybIiikb6DA+5wWlJA4LBnBs77NWE3SKvfinzahDVijXjpo
+      PniIkTfdftM0W8S9f399g1M3GxUmaec80qaKqZIcXitVZZUjfqFIxImIceJaD8wq
+      kAMn8Bpd9GTuZHJnIo2AVY3blo/17HsLdvnJBwaGV55XVE4LGJyWPcvrEKXyqGPh
+      6zSEj1/CA21wZpGLW5gzOnsy0jFhFCFuzQZdvCUPaGWuI0xB0kxG/E4g6ZO/J+c+
+      +Q+aAHCwri/H4ETrXQ9jLFgvTdbHi9hHqKjWZYwgtdasTm1XKHxMgf6caCRFG4vY
+      p5+4j+EubTOq+G2xzU9P4om/YKGeJiXlWvxNzso7etF87J7wU0h3arKK3xnCvr8o
+      DT2iQG0RbwdMi0jbGfFUdvGpLJSvLf1vHapVoovAO1CxTg+QPDz5d+u4McU4N0Wh
+      HAvMgqYzZo1LH1FB+tB99fEIbHJa+I2UwLSHIg2TYQZG3ZvBr3s54pSOWL1x0sNT
+      Roy/MQIDAQABo0IwQDAOBgNVHQ8BAf8EBAMCAqQwDwYDVR0TAQH/BAUwAwEB/zAd
+      BgNVHQ4EFgQUFT8GfX2hZ3XyZQc+FhdIPqkgAbswDQYJKoZIhvcNAQELBQADggGB
+      AAiAmW3lTv3EQrf7+M7CP8cOGJPveRLT18yH/B/aYUplUThgAbBXlFrLT2EuD+/o
+      RMAl2SbqyIZgLfqTmaYuwXNegxVJ1Pdp+KD7j8iTrJhYfwsWWTCZlu9KoX2qbbp+
+      XqmguYJz6D8ZULksV1lODYHRj2A6bVvd2jbUbIhNRginwyhOG5KdB74dvI3BNEyY
+      q1yMxeSLYwSrwYmY0Wf6jnUzTugbWH+qdNLeLO3CFugnQIr2qM+JxJDaXayzywAw
+      INDP8h8bPD6nrX46Wb6MyDmRL85brnPdlrmsN7DYUDvCj5ZEUHMWPxy3Zib1cHu7
+      7B7LPyPRbWdGakxgARemFkJGbosTKgJ6gOnhUPPq+SwZTfra0Z/g8Vlg4QdUFV//
+      8XUPTsFDtZJ4OXKZWwNcih/LaN79tzj3fFtp9eY1c58ukcevkXTiYmVxvixhlxkT
+      a1jxkSPnu5E4NKxCYU0tmg9AkfIA1qizr5wKn7+PUnsHtqQs294YjjiF9fncQ4uS
+      Ig==
+      -----END CERTIFICATE-----
+  controller-machines:
+    "0":
+      instance-id: bh8sbd
+  models:
+    controller:
+      uuid: d6929b09-568d-4d1c-8d1f-2f52bf99ba7e
+      model-uuid: d6929b09-568d-4d1c-8d1f-2f52bf99ba7e
+      machine-count: 1
+      core-count: 2
+    default:
+      uuid: d3221c45-7529-4216-88b7-beeb15d37041
+      model-uuid: d3221c45-7529-4216-88b7-beeb15d37041
+    dv-test:
+      uuid: 749b7297-9d94-4ae9-8f1a-e6dbedd445b5
+      model-uuid: 749b7297-9d94-4ae9-8f1a-e6dbedd445b5
+      machine-count: 17
+      core-count: 48
+  current-model: admin/dv-test
+  account:
+    user: admin
+    access: superuser

@@ -4,7 +4,9 @@ Get Contrail / OpenStack configuration files and compare them against previous v
 ## Introduction
 Contrail is typically deployed via automated tools such as: juju, RHOSP, helm, ansible etc.  
 Sometimes issues can happen on these platforms and bad config can be pushed out to the platform.  
-Also planned work can happen that can break Contrail components.
+Also planned work can happen that can break Contrail components.  
+
+This script focuses on juju deployments,although most of the code should be reusable (with a little tweaking) for other methods. 
 
 Configuration is deployed in many different locations (hosts and files) so it can take time to find the issues.  
 This script aims to solve some of those problems.  
@@ -15,21 +17,24 @@ The config can then be quickly corrected.
 The script has 2 modes:
 ### 1) push config into a git repo.  
 This can be used to track the changes to configuration state over time and be a store for a 'known good' 
-working cofiguration.  It can also help pin point when changes occured and correlate them to changes in DC behaviour.
+working cofiguration.  It can also help pinpoint when changes occured and correlate them to changes in DC behaviour.
 Typically the script would be executed in this mode via cron.
 ### 2) Execute before and after a planned work event.
 Here configs are stored in plain text and a diff produced when the 'after' snapshot is captured.
 It allows an operator to quickly assess if their change was successful or if anything unexpected has changed.
 
 ## Configuration
-The script takes input from 2 yaml files, one documents the remote component IPs (controller, analytics, heat etc).  
-The other documents the config files you are interested in.
-The files are completely configurable but examples have been included in the repo.
+The script takes input from 3 yaml files: 
+* one documents the remote component IPs (controller, analytics, heat etc).  
+* one documents the config files you are interested in, on the remote components
+* one contains a snapshot of 'juju show-controller' (needed to lookup the juju controller: IP, CA cert, port, model name etc etc)
+
+The files are configurable, examples have been included in the repo.
+
 As Contrail / Openstack configs are typically only root readable, the script obtains them via a 'sudo cat' over an ssh session.  
 Currently the script only works if the uid used with SSH can passwordless sudo on the remote component servers.
 
-If you want to generate the IPs yaml file from a 'juju status' you can do this automatically with the script.
-Currently other deployment methods require the file to be generated manually.
+If you want to generate the IPs yaml file from a 'juju status' you can do this automatically with the script using '-g'.
 
 ** WARNING **   
 Lots of the files that are obtained contain passwords (why they are only root readable on the remote systems).
@@ -43,7 +48,7 @@ For all options please see ```python3 contrail_config_diff.py -h```
 
 ### 1) Push Configs into a git repo
 ```
-python ./contrail_config_diff.py unit_ips.yaml files_no_ssl.yaml -r test-repo
+python ./contrail_config_diff.py unit_ips.yaml files_no_ssl.yaml juju_file.yaml admin -r test-repo
 ```
 Above line will produce no output, std_err & std_out are redirected to ./logs
 Typically you'd instantiate that in cron or via another automated execution mechanism
@@ -105,7 +110,7 @@ index 453da11..8d467c9 100644
 Note '-g' can be used with both modes, it means the 'ips_file.yaml' will be auto generated from juju 
 
 ```
-sdn/contrail-config-diff$ python ./contrail_config_diff.py unit_ips.yaml files_no_ssl.yaml -g -m test-upgrade -w before
+sdn/contrail-config-diff$ python ./contrail_config_diff.py unit_ips.yaml files_no_ssl.yaml juju_file.yaml admin -g -m test-upgrade -w before
 getting juju status
 generating and writing component IPs file from 'juju status' output
 getting 'contrail-analytics' data
@@ -129,7 +134,7 @@ from '172.16.0.125'
 ```
 
 ```
-sdn/contrail-config-diff$ python ./contrail_config_diff.py unit_ips.yaml files_no_ssl.yaml -g -m test-upgrade -w after
+sdn/contrail-config-diff$ python ./contrail_config_diff.py unit_ips.yaml files_no_ssl.yaml juju_file.yaml admin -g -m test-upgrade -w after
 getting juju status
 generating and writing component IPs file from 'juju status' output
 output directory already exists, old files will be deleted, proceed?, y/n:y

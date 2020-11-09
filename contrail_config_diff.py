@@ -6,9 +6,9 @@ import shutil
 import filecmp
 import pathlib
 import argparse
+import base64
 import re
 import yaml
-import keyring
 import logging
 from logging.handlers import RotatingFileHandler
 from juju import loop
@@ -181,7 +181,7 @@ def parse_juju_controller(juju_controller):
 
 async def get_juju_status_api(model_name, uuid, ca_cert, api_endpoint, username):
     """Connect to current juju model and obtain a status."""
-    password = keyring.get_password('contrail-config-diff', username)
+    password = base64.b64decode(read_file('./configs/secrets')).decode('utf-8')
     model = Model()
     await model.connect(
         api_endpoint,

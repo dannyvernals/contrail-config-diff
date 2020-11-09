@@ -176,7 +176,8 @@ def parse_juju_controller(juju_controller):
     ca_cert =  juju_controller[model_name]['details']['ca-cert']
     uuid = juju_controller[model_name]['models']['dv-test']['model-uuid']
     api_endpoint = juju_controller[model_name]['details']['api-endpoints'][0]
-    return model_name, uuid, ca_cert, api_endpoint
+    username = juju_controller[model_name]['account']['user']
+    return model_name, uuid, ca_cert, api_endpoint, username
 
 
 async def get_juju_status_api(model_name, uuid, ca_cert, api_endpoint, username):
@@ -289,7 +290,6 @@ def cli_grab():
                         help="Location of YAML file containing config file paths")
     parser.add_argument("juju_file",
                         help="Location of YAML file containing 'juju show-controller' output'")
-    parser.add_argument("uid", help="juju username")
     parser.add_argument("-g", "--get-ips", action="store_true",
                         help="Generate ips_file from 'juju status'")
     parser.add_argument("-d", "--diff-only", action="store_true",
@@ -336,10 +336,7 @@ def main(args):
                                                             args['juju_file']
                                                            )
     LOGGER.info("getting juju status")
-    juju_status = loop.run(get_juju_status_api(*parse_juju_controller(juju_controller), 
-                                               args['uid']
-                                              )
-                          )
+    juju_status = loop.run(get_juju_status_api(*parse_juju_controller(juju_controller)))
     if args['get_ips']:
         LOGGER.info("generating and writing component IPs file from 'juju status' output")
         unit_ips = parse_juju_status_api(juju_status)

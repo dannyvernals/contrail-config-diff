@@ -6,6 +6,7 @@ import shutil
 import filecmp
 import pathlib
 import argparse
+import base64
 import re
 import yaml
 import logging
@@ -42,11 +43,12 @@ def read_file(file_path):
     return file_contents
 
 
-def read_conf_files(unit_ip_file, remote_files):
+def read_conf_files(unit_ip_file, remote_files, juju_controller):
     """load settings from the specified yaml files"""
     conf_files = yaml.safe_load(read_file(remote_files))
     unit_ips = yaml.safe_load(read_file(unit_ip_file))
-    return unit_ips, conf_files
+    juju_controller = yaml.safe_load(read_file(juju_controller))
+    return unit_ips, conf_files, juju_controller
 
 
 def write_file(contents, file_location):
@@ -168,13 +170,27 @@ def diff_files(old_dir, new_dir, diff_mode):
     else:
         LOGGER.info("missing directory: '{}' or '{}'\nstopping diff".format(old_dir, new_dir))
 
-async def get_juju_status_api():
-    """Connect to current juju model and obtain a status.
-    currently reliant on user obtaining an auth macaroon via juju CLI
-    TODO: implement local authentication"""
+
+def parse_juju_controller(juju_controller):
+    model_name = list(juju_controller.keys())[0]
+    ca_cert =  juju_controller[model_name]['details']['ca-cert']
+    uuid = juju_controller[model_name]['models']['dv-test']['model-uuid']
+    api_endpoint = juju_controller[model_name]['details']['api-endpoints'][0]
+    username = juju_controller[model_name]['account']['user']
+    return model_name, uuid, ca_cert, api_endpoint, username
+
+
+async def get_juju_status_api(model_name, uuid, ca_cert, api_endpoint, username):
+    """Connect to current juju model and obtain a status."""
+    password = base64.b64decode(read_file('./configs/secrets')).decode('utf-8')
     model = Model()
-    #await model.connect(username='admin', password='c0ntrail123')
-    await model.connect()
+    await model.connect(
+        api_endpoint,
+        uuid,
+        username,
+        password,
+        ca_cert,
+    )
     status = await model.get_status()
     await model.disconnect()
     return status
@@ -263,7 +279,6 @@ def check_dir_git(output_dir):
         LOGGER.info(std_err)
 
 
-
 def cli_grab():
     """take stuff from cli, output it in a dict"""
     parser = argparse.ArgumentParser(description="Grab contrail configs and compare with others. "
@@ -273,6 +288,8 @@ def cli_grab():
                         help="Location of YAML file containing Contrail component IPs")
     parser.add_argument("config_file",
                         help="Location of YAML file containing config file paths")
+    parser.add_argument("juju_file",
+                        help="Location of YAML file containing 'juju show-controller' output'")
     parser.add_argument("-g", "--get-ips", action="store_true",
                         help="Generate ips_file from 'juju status'")
     parser.add_argument("-d", "--diff-only", action="store_true",
@@ -314,13 +331,16 @@ def main(args):
         file_dir =   './maintenances/' + args['maint_name'] + '/'
         diff_files(file_dir + 'before', file_dir + 'after', 'normal')
         exit()
+    unit_ips, conf_files, juju_controller = read_conf_files(args['ips_file'],
+                                                            args['config_file'],
+                                                            args['juju_file']
+                                                           )
     LOGGER.info("getting juju status")
-    juju_status = loop.run(get_juju_status_api())
+    juju_status = loop.run(get_juju_status_api(*parse_juju_controller(juju_controller)))
     if args['get_ips']:
         LOGGER.info("generating and writing component IPs file from 'juju status' output")
         unit_ips = parse_juju_status_api(juju_status)
         write_file(yaml.dump(unit_ips, default_flow_style=False), args['ips_file'])
-    unit_ips, conf_files = read_conf_files(args['ips_file'], args['config_file'])
     if args['maint_name']:
         output_dir =  './maintenances/' + args['maint_name'] + '/' + args['when']
         check_dir(output_dir)
@@ -332,7 +352,7 @@ def main(args):
                        output_dir, args['username'], args['inc_passwords']
                       )
     if args['maint_name'] and args['when'] == 'after':
-        compare_dir =  '/.maintenances/' + args['maint_name'] + '/before'
+        compare_dir =  './maintenances/' + args['maint_name'] + '/before'
         diff_files(compare_dir, output_dir, 'normal')
 
 
